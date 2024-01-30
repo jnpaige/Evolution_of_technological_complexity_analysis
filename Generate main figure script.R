@@ -7,14 +7,15 @@ setwd(here::here())
 source("Prepare data script.R")
 
 setwd(paste(here::here(),"/Models",sep="",collapse=""))
-m3.1<-readRDS("m3.1.Rds")
+m2<-readRDS("m2.Rds")
+m2_early<-readRDS("m2_early.Rds")
+m2_late<-readRDS("m2_late.Rds")
 
 ###
 ###Figure
 ###
 
 
-# FIGURE 3A
 # Sample from posteriors of mean age, early age, and late age
 newd <- data.frame(mean_age = seq(-0.66, 3.3, by = 0.01))
 pred <- posterior_predict(m2, newdata = newd, re_formula = NA, ndraw = 4000, ntrys=50)  # Global grand mean, no site-specific deviations. Ntrys =20:  Warning messages of some predicted values invalid are due to the fact that this is a truncated discrete model, see ?posterior_predict
@@ -38,8 +39,8 @@ plot_data <- data.frame(
   quantiles_low = quantiles_low,
   medians = medians)
 
-# Log-scale plot
-Main <- ggplot() +
+# Main Figure
+main <- ggplot() +
   geom_ribbon(data = plot_data, aes(x = mean_age, ymin = quantiles_low, ymax = quantiles_high), fill = "lightcoral", alpha = 0.35) +  # JON: Other option that looks good is skyblue, alpha 0.4
   geom_point(data = d, aes(x = mean_age, y = PU), shape = 1, color = "black", size = 1.5, stroke = 1) +
   geom_line(data = plot_data, aes(x = mean_age, y = medians), color = "black", size = 0.75) +
@@ -54,7 +55,8 @@ Main <- ggplot() +
 
 # Save figure
 setwd(paste(here::here(),"/Figures",sep="",collapse=""))
-ggsave("Figure2.pdf", Main, device = "pdf", width = 10, height = 6, units = "in", dpi=1200)
+ggsave("figure1.pdf", main, device = "pdf", width = 6, height = 4, units = "in", dpi=1200)
+ggsave("figure1.tiff", main, device = "tiff", width = 6, height = 4, units = "in", dpi=600)
 
 
 #  Probability that a PU threshold has been crossed as a function of time
@@ -87,7 +89,7 @@ label_positions <- data.frame(
   line = c("PU>6", "PU=7", "PU>8"))
 
 # Create ggplot without legend
-ggplot(data, aes(x = age)) +
+p<-ggplot(data, aes(x = age)) +
   geom_smooth(aes(y = p6), color="darkblue", size = 0.75) +
   geom_smooth(aes(y = p7), color="darkblue", size = 0.75) +
   geom_smooth(aes(y = p8), color="darkblue", size = 0.75) +
@@ -105,6 +107,10 @@ ggplot(data, aes(x = age)) +
     axis.text.y = element_text(size = 12),
     plot.margin = margin(.5,1.0,.5,.5, "cm"),
     legend.position = "none")
+
+setwd(paste(here::here(),"/Figures",sep="",collapse=""))
+ggsave("SIfig7.pdf", p, device = "pdf", width = 6, height = 4, units = "in", dpi=1200)
+ggsave("SIfig7.tiff", p, device = "tiff", width = 6, height = 4, units = "in", dpi=600)
 
 
 # Plot posteriors of Early Age and Late Age models
@@ -144,7 +150,7 @@ plot_data <- data.frame(
   medians_l = medians_l)
 
 
-ggplot() +
+p<-ggplot() +
   geom_point(data = d, aes(x = mean_age, y = PU), shape = 1, color = "black", size = 1.5, stroke = 1) +
   geom_ribbon(data = plot_data, aes(x = mean_age, ymin = quantiles_low, ymax = quantiles_high), fill = "lightgray", alpha = 0.5) +  # JON: Other option that looks good is skyblue, alpha 0.4
   geom_line(data = plot_data, aes(x = mean_age, y = medians), color = "black", size = 0.75) +
@@ -161,5 +167,10 @@ ggplot() +
         axis.title.y = element_text(size = 12, margin = margin(r = 15, l = 10)),
         axis.text.x = element_text(size = 12),
         axis.text.y = element_text(size = 12))
+
+p
+setwd(paste(here::here(),"/Figures",sep="",collapse=""))
+ggsave("SIfig8.pdf", p, device = "pdf", width = 6, height = 4, units = "in", dpi=1200)
+ggsave("SIfig8.tiff", p, device = "tiff", width = 6, height = 4, units = "in", dpi=600)
 
 

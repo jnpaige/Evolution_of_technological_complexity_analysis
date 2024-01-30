@@ -78,6 +78,21 @@ m2_late<- brm(PU |trunc(lb=3) ~ s(late_age, k = 14) + (1|site),
 
 loo(m0, m1,m2, moment_match=TRUE)
 
+
+setwd(paste(here::here(),"/Models",sep="",collapse=""))
+# Save an object to a file
+saveRDS(m0, file = "m0.rds")
+saveRDS(m1, file = "m1.rds")
+saveRDS(m2, file = "m2.rds")
+saveRDS(m2_early, file = "m2_early.rds")
+saveRDS(m2_late, file = "m2_late.rds")
+
+# Read back in
+setwd(paste(here::here(),"/Models",sep="",collapse=""))
+m2<-readRDS(file = "m2.rds")
+
+
+
 # Summary and diagnostics for a selected model
 summary(m2)
 plot(m2)
@@ -105,10 +120,14 @@ plot_data <- expand.grid(mean_age = predictor_range, sample = 1:n_samples)
 plot_data$lambda <- exp(intercepts[plot_data$sample] + betas[plot_data$sample] * plot_data$mean_age)
 
 # Plot regression lines
-ggplot(plot_data, aes(x = -mean_age, y = lambda, group = sample, color = as.factor(sample))) +
+p<-ggplot(plot_data, aes(x = -mean_age, y = lambda, group = sample, color = as.factor(sample))) +
   geom_line(show.legend = FALSE) +
   theme_minimal() +
   labs(title = 'Sampled Regression Lines from Priors', x = 'Age', y = 'PU')
+
+setwd(paste(here::here(),"/Figures",sep="",collapse=""))
+ggsave("SIfig4.pdf", p, device = "pdf", width = 6, height = 4, units = "in", dpi=1200)
+ggsave("SIfig4.tiff", p, device = "tiff", width = 6, height = 4, units = "in", dpi=600)
 
 
 # Sample from the model's prior and plot one example of the simulated data
@@ -117,10 +136,15 @@ pred_prior <- posterior_predict(m2_priors, newdata = newd_prior, re_formula = NA
 n <- sample(1:1000, size = 1)  # Pick one of the samples
 
 # Plotting sampled data
-ggplot(newd_prior, aes(x = -mean_age, y = pred_prior[n,])) +
+p<-ggplot(newd_prior, aes(x = -mean_age, y = pred_prior[n,])) +
   geom_point(shape = 21, fill = NA, color = "black") +
   labs(x = "Log age (std)", y = "PU", title = "Sampling from the Priors") +
   theme_minimal()
+
+setwd(paste(here::here(),"/Figures",sep="",collapse=""))
+ggsave("SIfig5.pdf", p, device = "pdf", width = 6, height = 4, units = "in", dpi=1200)
+ggsave("SIfig5.tiff", p, device = "tiff", width = 6, height = 4, units = "in", dpi=600)
+
 
 
 setwd(here::here())

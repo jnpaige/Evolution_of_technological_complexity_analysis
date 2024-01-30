@@ -8,7 +8,7 @@ library(rnaturalearthdata)
 setwd(here::here())
 source("Prepare data script.R")
 data<-d
-sites<-data[, grep("^Lat$|^Long$", names(data))]
+sites<-data[, grep("^latitude$|^longitude$", names(data))]
 names(sites)<-c("latitude","longitude")
 sites$grp<-"Assemblages sampled"
 world <- ne_countries(scale = "medium", returnclass = "sf")
@@ -34,3 +34,5 @@ map<-ggplot(data = world) +
 
 setwd(paste(here::here(),"/Figures",sep="",collapse=""))
 ggsave("map.pdf", map, device = "pdf", width = 6, height = 4, units = "in", dpi=1200)
+ggsave("map.tiff", map, device = "tiff", width = 6, height = 4, units = "in", dpi=600)
+

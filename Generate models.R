@@ -100,7 +100,7 @@ saveRDS(m2_early, file = "m2_early.rds")
 saveRDS(m2_late, file = "m2_late.rds")
 saveRDS(m2_priors, file = "m2_priors.rds")
 
-
+summary(m2)
 
 setwd(paste(here::here(),"/Models",sep="",collapse=""))
 m0<-readRDS(file = "m0.rds")

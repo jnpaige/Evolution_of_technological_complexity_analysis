@@ -3,8 +3,9 @@
 This repository contains the analysis of procedural unit data for a research paper
 focused on measuring changes in technological complexity across the past 3 million years. 
 The data analyzed are numbers of techniques (procedural units) present in tool-making sequences reported in the literature. 
-These are stored in their own github repository:, and are also hosted on Zenodo:
-The codebook used to build this dataset is stored in its own set of repositories: 
+These are stored in their own github repository. The original dataset is hosted on github here: https://github.com/jnpaige/Procedural.unit.dataset. 
+
+The codebook used to build this dataset (version 1.1) is stored here: https://github.com/jnpaige/Procedural.unit.codebook
 
 
 The analysis is broken up into four scripts. 
